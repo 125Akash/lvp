@@ -150,42 +150,93 @@
       const yes = document.getElementById("yes");
       const no = document.getElementById("no");
 
-      buttons.addEventListener("mousemove", (e) => {
+      function moveNo(clientX, clientY) {
         const rect = buttons.getBoundingClientRect();
 
-        // Mouse position inside buttons container
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        const mouseX = clientX - rect.left;
+        const mouseY = clientY - rect.top;
 
         // Center of Yes button
         const yesX = yes.offsetLeft + yes.offsetWidth / 2;
         const yesY = yes.offsetTop + yes.offsetHeight / 2;
 
-        // Vector from mouse to Yes
         let dx = yesX - mouseX;
         let dy = yesY - mouseY;
 
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        let distance = Math.sqrt(dx * dx + dy * dy);
 
-        // Only run when mouse is close
-        if (distance < 120) {
-          // Normalize vector
+        if (distance < 1) distance = 1;
+
+        // Only move when the pointer is close
+        if (distance < 150) {
           dx /= distance;
           dy /= distance;
 
-          // Stay about 110px from Yes
-          const radius = 110;
+          const radius = 120;
 
           let x = yesX + dx * radius - no.offsetWidth / 2;
           let y = yesY + dy * radius - no.offsetHeight / 2;
 
-          // Keep inside container
+          // Keep inside the buttons container
           x = Math.max(0, Math.min(x, buttons.clientWidth - no.offsetWidth));
           y = Math.max(0, Math.min(y, buttons.clientHeight - no.offsetHeight));
 
-          no.style.left = x + "px";
-          no.style.top = y + "px";
+          no.style.left = `${x}px`;
+          no.style.top = `${y}px`;
         }
+      }
+
+      // Desktop support
+      buttons.addEventListener("mousemove", (e) => {
+        moveNo(e.clientX, e.clientY);
+      });
+
+      // Mobile support
+      buttons.addEventListener(
+        "touchmove",
+        (e) => {
+          const touch = e.touches[0];
+          moveNo(touch.clientX, touch.clientY);
+        },
+        { passive: true },
+      );
+
+      // Escape when user tries to tap No
+      no.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+
+        const angle = Math.random() * Math.PI * 2;
+        const radius = 120;
+
+        const yesX = yes.offsetLeft + yes.offsetWidth / 2;
+        const yesY = yes.offsetTop + yes.offsetHeight / 2;
+
+        let x = yesX + radius * Math.cos(angle) - no.offsetWidth / 2;
+        let y = yesY + radius * Math.sin(angle) - no.offsetHeight / 2;
+
+        x = Math.max(0, Math.min(x, buttons.clientWidth - no.offsetWidth));
+        y = Math.max(0, Math.min(y, buttons.clientHeight - no.offsetHeight));
+
+        no.style.left = `${x}px`;
+        no.style.top = `${y}px`;
+      });
+
+      // Prevent clicking No on desktop
+      no.addEventListener("mouseenter", () => {
+        const angle = Math.random() * Math.PI * 2;
+        const radius = 120;
+
+        const yesX = yes.offsetLeft + yes.offsetWidth / 2;
+        const yesY = yes.offsetTop + yes.offsetHeight / 2;
+
+        let x = yesX + radius * Math.cos(angle) - no.offsetWidth / 2;
+        let y = yesY + radius * Math.sin(angle) - no.offsetHeight / 2;
+
+        x = Math.max(0, Math.min(x, buttons.clientWidth - no.offsetWidth));
+        y = Math.max(0, Math.min(y, buttons.clientHeight - no.offsetHeight));
+
+        no.style.left = `${x}px`;
+        no.style.top = `${y}px`;
       });
       document.getElementById("yes").onclick = () => {
         confetti({ particleCount: 250, spread: 180, origin: { y: 0.6 } });
