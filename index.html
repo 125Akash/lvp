@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>For Yashadaa ❤️</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+      body {
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #ff5c8a, #ff89b5);
+        color: #fff;
+      }
+      .card {
+        position: relative;
+        text-align: center;
+        padding: 40px;
+        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+      }
+      h1 {
+        font-size: 42px;
+        margin-bottom: 10px;
+      }
+      p {
+        margin: 12px 0 25px;
+        font-size: 22px;
+      }
+      .buttons {
+        position: relative;
+        width: 420px;
+        height: 90px;
+        margin: 35px auto 0;
+      }
+      .buttons button {
+        position: absolute;
+        padding: 15px 35px;
+        border: none;
+        border-radius: 40px;
+        font-size: 22px;
+        font-weight: bold;
+        cursor: pointer;
+        transition:
+          left 0.18s ease,
+          top 0.18s ease;
+      }
+      #yes {
+        left: 70px;
+        top: 15px;
+        background: #ff0f7b;
+        color: white;
+      }
+      #no {
+        left: 250px;
+        top: 15px;
+        background: white;
+        color: #ff0f7b;
+      }
+      .heart {
+        position: fixed;
+        bottom: -30px;
+        font-size: 24px;
+        animation: up linear infinite;
+        opacity: 0.8;
+      }
+      @keyframes up {
+        0% {
+          transform: translateY(0);
+          opacity: 0;
+        }
+        20% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-120vh);
+          opacity: 0;
+        }
+      }
+      #lovePage {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #ff4f81, #ff9dc5);
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+        text-align: center;
+      }
+      #lovePage img {
+        width: 320px;
+        height: 320px;
+        object-fit: cover;
+        border-radius: 20px;
+        border: 5px solid white;
+        box-shadow: 0 0 30px white;
+      }
+      #message {
+        max-width: 800px;
+        margin-top: 20px;
+        font-size: 22px;
+        white-space: pre-line;
+        line-height: 1.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" id="proposal">
+      <h1>Will You Be My Girlfriend? ❤️</h1>
+      <p>Yashadaa ✨</p>
+      <div class="buttons">
+        <button id="yes">Yes 💖</button>
+        <button id="no">No 😅</button>
+      </div>
+    </div>
+
+    <div id="lovePage">
+      <img src="./yashda.jpeg" alt="Yashadaa" />
+      <h1 style="margin-top: 20px">I Love You ❤️</h1>
+      <div id="message"></div>
+      <audio id="song" loop>
+        <source src="./song.mpeg" type="audio/mpeg" />
+      </audio>
+    </div>
+
+    <script>
+      for (let i = 0; i < 60; i++) {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.innerHTML = "💖";
+        h.style.left = Math.random() * 100 + "%";
+        h.style.animationDuration = 4 + Math.random() * 5 + "s";
+        h.style.fontSize = 18 + Math.random() * 18 + "px";
+        document.body.appendChild(h);
+      }
+
+      const buttons = document.querySelector(".buttons");
+      const yes = document.getElementById("yes");
+      const no = document.getElementById("no");
+
+      buttons.addEventListener("mousemove", (e) => {
+        const rect = buttons.getBoundingClientRect();
+
+        // Mouse position inside buttons container
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // Center of Yes button
+        const yesX = yes.offsetLeft + yes.offsetWidth / 2;
+        const yesY = yes.offsetTop + yes.offsetHeight / 2;
+
+        // Vector from mouse to Yes
+        let dx = yesX - mouseX;
+        let dy = yesY - mouseY;
+
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Only run when mouse is close
+        if (distance < 120) {
+          // Normalize vector
+          dx /= distance;
+          dy /= distance;
+
+          // Stay about 110px from Yes
+          const radius = 110;
+
+          let x = yesX + dx * radius - no.offsetWidth / 2;
+          let y = yesY + dy * radius - no.offsetHeight / 2;
+
+          // Keep inside container
+          x = Math.max(0, Math.min(x, buttons.clientWidth - no.offsetWidth));
+          y = Math.max(0, Math.min(y, buttons.clientHeight - no.offsetHeight));
+
+          no.style.left = x + "px";
+          no.style.top = y + "px";
+        }
+      });
+      document.getElementById("yes").onclick = () => {
+        confetti({ particleCount: 250, spread: 180, origin: { y: 0.6 } });
+        document.getElementById("proposal").style.display = "none";
+        const page = document.getElementById("lovePage");
+        page.style.display = "flex";
+        document.getElementById("song").play();
+
+        const text = `Dear Yashadaa ❤️,
+
+From the moment you came into my life,
+everything became a little brighter.
+
+Your smile is my favorite view,
+your happiness is my biggest wish,
+and every moment with you is special.
+
+I promise to always respect you,
+care for you, support you,
+and keep making you smile.
+
+I Love You Forever. ❤️
+
+– Om 🌹`;
+
+        let i = 0;
+        function type() {
+          if (i < text.length) {
+            document.getElementById("message").textContent += text.charAt(i++);
+            setTimeout(type, 35);
+          }
+        }
+        type();
+      };
+    </script>
+  </body>
+</html>
